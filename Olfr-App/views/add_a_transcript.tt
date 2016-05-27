@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<script>
+
+function goBack() 
+ {
+   window.history.back();
+ }
+
+function goHome()
+ {
+   window.location = '/';   
+ }
+
+function wrongChrom()
+ {
+  alert("gene NOT added : wrong chromosome or wrong strand");
+  return false;
+ }
+
+
+function transExists()
+ {
+   alert("transcript name already exists");
+   return false;
+ }
+
+function checkVals()
+ {
+   var tfr = document.getElementsByName("exon_from")[0].value;
+   var tto = document.getElementsByName("exon_to")[0].value;
+   if( tfr >= tto ) {
+    alert("problem: end ("+tto+") <= start("+tfr+")");
+    return false;
+   }
+  return true;
+ }
+
+</script>
+
+<head>
+<style>
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th,td {
+    padding: 15px;
+    text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+<div id="page">
+  <div id="content">
+    <div id="header">
+     <p><p> 
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <button onclick="goHome()">Home</button>
+    <p><p>
+     <% IF wrong_chrom OR wrong_strand %>
+      <script type="text/javascript">
+            wrongChrom();
+        </script>
+     <% END %>
+     <% IF wrong_trans %>
+      <script type="text/javascript">
+            transExists();
+      </script>
+     <% END %>
+
+    <form name="addTform" action="<% add_transcript_url %>" onsubmit="return checkVals()" method="get">
+    <table>
+     <tr bgcolor='#EEB4B4'><td>gene name</td>
+       <td><input type="text" name="gene_name" required></td>
+      <td>transcript name</td>
+       <td><input type="text" name="trans_name" required></td>
+      <td>chromosome</td>
+       <td><select class="dropdown" name="chromosome" required>
+
+        <% FOREACH chr IN chromosomes %>
+         <% IF chr == 'select' %>
+          <option value disabled selected> -- select -- </option>
+         <% ELSE %>
+          <option value="<% chr %>"><% chr %></option> 
+         <% END %>
+        <% END %>
+       
+        </td>
+      <td>strand</td>
+       <td><select class="dropdown" name="strand" required>
+        
+       <% FOREACH str IN strand %>
+        <% IF str == 'select' %>
+         <option value disabled selected> -- select -- </option>
+        <% ELSE %>
+         <option value="<% str %>"><% str %></option>
+        <% END %>
+       <% END %>
+      </td></tr>
+     </table>
+     <p><p>
+     <table>
+      <% FOREACH exon_num in exons %>
+       <% IF exon_num == '1' %>
+        <tr bgcolor='#EEB4B4'><td>exon <% exon_num %></td><td>from</td><td><input type="number" name="exon_from" required>
+         </td><td>to</td><td><input type="number" name="exon_to" required>
+         <input type="hidden" name="exon_number" value="<% exon_num %>">
+        </td></tr>
+       <% ELSE %>
+        <tr><td>exon <% exon_num %></td><td>from</td><td><input type="number" name="exon_from">
+         </td><td>to</td><td><input type="number" name="exon_to">
+         <input type="hidden" name="exon_number" value="<% exon_num %>">
+        </td></tr>
+       <% END %>
+     <% END %>
+     </table>
+     <p><p>
+     <table><tr>
+      <td>Comments</td>
+       <td><input type="text" name="gene_comment" style="width: 400px; height: 30px"></td></tr>
+     </tr>
+    </table> 
+     <p>
+     <p>
+       &nbsp;&nbsp;&nbsp;&nbsp;
+       <input type="submit" value="Submit" style="color:white;background-color:green">
+    </form>
+      <table>
+       <tr><td><font color='#FF0000'>Genes to do</td><td><% gene_count %></td>
+        <td><font color='#009D00'>Genes done</td><td><% done_genes %></td>
+        <td><font color='#0000FF'>Genes deleted</td><td><% del_genes %></td>
+        <td><font color='#EE00FF'>Genes added</td><td><% add_genes %></td></tr>
+        <tr><td><font color='#FF0000'>Transcripts to do</td><td><% trans_count %></td>
+        <td><font color='#009D00'>Transcripts done</td><td><% done_trans %></td>
+        <td><font color='#0000FF'>Transcripts deleted</td><td><% del_trans %></td>
+        <td><font color='#EE00FF'>Transcripts added</td><td><% add_trans %></td></tr>
+      </table>
+        <p>
+        </div>
+      </div>
+</div>
+</body>

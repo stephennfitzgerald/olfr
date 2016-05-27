@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<script>
+
+</script>
+
+<head>
+<style  type="text/css">
+
+body {
+    background-image: url("images/mouse_nose.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-size:150%;
+    background-position: center;
+}
+
+#box {
+    margin-left:150px;
+    margin-top:200px;
+    font-family:sans-serif;
+    font-size:20pt;
+    color:white;
+}
+
+
+</style>
+</head>
+
+<body>
+<div id="page">
+  </div>
+    <p><p>
+    <table id="box">
+     <tr><td>&nbsp;</td></tr>
+     <form action="<% next_gene_url %>" method="get">
+      <tr><td>next&nbsp;gene&nbsp;model&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>
+       <input type=submit value="&#8594;">
+      </td></tr>
+     </form>
+     <form action="<% add_a_transcript_url %>" method="get">
+      <tr><td>&nbsp;</td></tr>
+      <tr><td>add&nbsp;a&nbsp;new&nbsp;transcript&nbsp;&nbsp;&nbsp;&nbsp;</td><td>
+       <input type=submit value="&#8594;">
+      </td></tr>
+     </form>
+    </table>
+</body>

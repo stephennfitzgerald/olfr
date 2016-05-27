@@ -1,0 +1,125 @@
+<HTML>
+<TITLE>BLAST Search Results</TITLE>
+<BODY BGCOLOR="#FFFFFF" LINK="#0000FF" VLINK="#660099" ALINK="#660099">
+<PRE>
+
+<b>BLASTX 2.3.0+</b>
+
+
+<b><a
+href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=PubMed&cmd=Re
+trieve&list_uids=9254694&dopt=Citation">Reference</a>:</b>
+Stephen F. Altschul, Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
+"Gapped BLAST and PSI-BLAST: a new generation of protein database
+search programs", Nucleic Acids Res. 25:3389-3402.
+
+
+
+Database: All non-redundant GenBank CDS translations+PDB+SwissProt+PIR+PRF
+excluding environmental samples from WGS projects
+           76,928,302 sequences; 27,965,156,953 total letters
+
+
+
+<b>Query=</b> 2000
+
+Length=211
+                                                                      Score     E
+Sequences producing significant alignments:                          (Bits)  Value
+
+<a title="Show report for WP_027854206.1" href="http://www.ncbi.nlm.nih.gov/protein/654375048?report=genbank&log$=prottop&blast_rank=1&RID=" >ref|WP_027854206.1|</a>  long-chain-fatty-acid--CoA ligase [Marinobac...  <a href=#654375048>36.2</a>    2.3  
+<a title="Show report for XP_013949685.1" href="http://www.ncbi.nlm.nih.gov/protein/927406551?report=genbank&log$=prottop&blast_rank=2&RID=" >ref|XP_013949685.1|</a>  hypothetical protein TRIVIDRAFT_56413 [Trich...  <a href=#927406551>35.8</a>    3.9  
+
+
+><a title="Show report for WP_027854206" href="http://www.ncbi.nlm.nih.gov/protein/654375048?report=genbank&log$=protalign&blast_rank=1&RID=0" >ref|WP_027854206.1|</a><a name=654375048></a> long-chain-fatty-acid--CoA ligase [Marinobacterium litorale]
+Length=563
+
+ Score = 36.2 bits (82),  Expect = 2.3, Method: Composition-based stats.
+ Identities = 16/38 (42%), Positives = 24/38 (63%), Gaps = 0/38 (0%)
+ Frame = -2
+
+Query  162  LCHLPAFRQMKYLAPLLQLRKGMSFSEDGLVQIQSTNG  49
+            LC+ PAFR++ + A  L L  GM+ ++D L + QS  G
+Sbjct  310  LCNNPAFRELDFSALKLTLSGGMALTQDALKRWQSVTG  347
+
+
+><a title="Show report for XP_013949685" href="http://www.ncbi.nlm.nih.gov/protein/927406551?report=genbank&log$=protalign&blast_rank=2&RID=0" >ref|XP_013949685.1|</a><a name=927406551></a> hypothetical protein TRIVIDRAFT_56413 [Trichoderma virens Gv29-8]
+ <a title="Show report for EHK15485" href="http://www.ncbi.nlm.nih.gov/protein/358377802?report=genbank&log$=protalign&blast_rank=2&RID=0" >gb|EHK15485.1|</a><a name=358377802></a> hypothetical protein TRIVIDRAFT_56413 [Trichoderma virens Gv29-8]
+Length=2004
+
+ Score = 35.8 bits (81),  Expect = 3.9, Method: Composition-based stats.
+ Identities = 19/48 (40%), Positives = 26/48 (54%), Gaps = 0/48 (0%)
+ Frame = +1
+
+Query  49    PIG*LYLDKTIFTERHPFPQLEERCKILHLSEGRKVAQETSGAPLSFK  192
+             P+   Y +K +FT   PFP L  R +I+   E R  AQET+   +S K
+Sbjct  1675  PVQEHYAEKLVFTAAEPFPTLLRRSEIIETREVRLTAQETALERISRK  1722
+
+
+
+Lambda      K        H        a         alpha
+   0.318    0.134    0.401    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 692556711532
+
+
+  Database: All non-redundant GenBank CDS translations+PDB+SwissProt+PIR+PRF
+excluding environmental samples from WGS projects
+    Posted date:  Nov 11, 2015  1:42 PM
+  Number of letters in database: 27,965,156,953
+  Number of sequences in database:  76,928,302
+
+
+
+Matrix: BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+Neighboring words threshold: 12
+Window for multiple hits: 40
+</PRE>
+</BODY>
+</HTML>
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@bc-32-1-15>
+Subject: Job 6441791[2000]: <job.[3-2288]> in cluster <farm3> Done
+
+Job <job.[3-2288]> was submitted from host <farm3-head4> by user <sf5> in cluster <farm3>.
+Job was executed on host(s) <bc-32-1-15>, in queue <normal>, as user <sf5> in cluster <farm3>.
+</nfs/users/nfs_s/sf5> was used as the home directory.
+</lustre/scratch109/sanger/sf5/Mouse_OLFRs/Set2Use/TblastX/Fasta_files> was used as the working directory.
+Started at Thu May 26 18:39:20 2016
+Results reported on Thu May 26 18:49:52 2016
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/software/ensembl/compara/ncbi-blast-2.3.0+/bin/blastx -num_alignments 10 -num_descriptions 10 -html -db /data/blastdb/Supported/NR/nr -query ./$LSB_JOBINDEX.fasta
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   613.04 sec.
+    Max Memory :                                 12358 MB
+    Average Memory :                             5377.76 MB
+    Total Requested Memory :                     23500.00 MB
+    Delta Memory :                               11142.00 MB
+    Max Swap :                                   12995 MB
+    Max Processes :                              3
+    Max Threads :                                4
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <tBlastx_out/err.2000> for stderr output of this job.
+

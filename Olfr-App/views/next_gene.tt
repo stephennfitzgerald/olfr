@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<script>
+
+function goBack() 
+ {
+   window.history.back();
+ }
+
+function goHome()
+ {
+   window.location = '/';   
+ }
+</script>
+
+<head>
+<style>
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th,td {
+    padding: 15px;
+    text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+<div id="page">
+  <div id="content">
+    <div id="header">
+    <p><p>
+    <form action="<% next_gene_url %>" method="get">
+     <table>
+        <% row_index = 1 %>
+         <% FOREACH rec IN next_gene %>
+          <% field_index = 1 %>
+             <% IF row_index % 2 %>
+              <tr bgcolor='#CEECF5'>
+             <% ELSE %>
+              <tr bgcolor='#FFFFFF'>
+             <%END %>
+             <% FOREACH field IN rec %>
+              <% IF row_index > 1 %> <!-- not the field names -->
+
+               <% SWITCH field_index %>
+                <% CASE 4 %> <! -- gene_name -->
+                 <td><% field %> 
+                 </td>
+                <% CASE 5 %> <! -- trans_name -->
+                 <td><% field %>
+                 </td>
+                <% CASE 6 %> <! -- exon_numb -->
+                 <td><% field %>
+                 </td>
+                <% CASE 7 %> <! -- seq_region -->
+                 <td>
+                  <% field %>
+                 </td>
+                <% CASE 8 %> <! -- exon_from-->
+                 <td>
+                  <input type="text" name="exon_from" value="<% field %>" required>
+                  <input type="hidden" name="efexon_id" value="<% rec.2 %>">
+                 </td>
+                <% CASE 9 %> <! -- exon_to -->
+                 <td>
+                  <input type="text" name="exon_to" value="<% field %>" required>
+                  <input type="hidden" name="etexon_id" value="<% rec.2 %>">
+                 </td>
+                <% CASE 10 %> <! -- strand -->
+                 <td><% field %>
+                 </td>
+                <% CASE 11 %> <! -- gene_ok -->
+                 <td>
+                   <input type="checkbox" name="gene_not_ok[]" value="<% rec.0 %>">
+                 </td>
+                <% CASE 12 %> <! -- trans_ok -->
+                 <td>
+                   <input type="checkbox" name="trans_not_ok[]" value="<% rec.1 %>">
+                   <input type="hidden" name="tgene_id" value="<% rec.0 %>">
+                 </td>
+                <% CASE 13 %> <! -- exon_ok -->
+                 <td>
+                  <input type="checkbox" name="exon_not_ok[]" value="<% rec.2 %>">
+                  <input type="hidden" name="egene_id" value="<% rec.0 %>">
+                  <input type="hidden" name="etrans_ids" value="<% rec.1 %>">
+                 </td>
+                 <td><a href="blastx/blastx.<% rec.1 %>.html"><img src="blastx/OK/blastx.<% rec.1 %>.html"></a>
+                 
+               <% END %>  
+              <% ELSE %> <!-- field headers -->
+
+               <% SWITCH field_index %>
+                <% CASE 4 %> <! -- gene_name -->
+                 <td bgcolor='#EEB4B4'><% field %> 
+                 </td>
+                <% CASE 5 %> <! -- trans_name -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                <% CASE 6 %> <! -- exon_numb -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                <% CASE 7 %> <! -- seq_region -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                <% CASE 8 %> <! -- strand -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                <% CASE 9 %> <! -- exon_from -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                <% CASE 10 %> <! -- exon_to -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                <% CASE 11 %> <! -- gene_ok -->
+                 <td bgcolor='#EEB4B4'>delete_gene
+                 </td>
+                <% CASE 12 %> <! -- trans_ok -->
+                 <td bgcolor='#EEB4B4'>delete_trans
+                 </td>
+                <% CASE 13 %> <! -- exon_ok -->
+                 <td bgcolor='#EEB4B4'>delete_exon
+                 </td>
+                 <td bgcolor='#EEB4B4'>blastx
+                 </td>
+               <% END %> 
+              <% END %>
+              <% field_index = field_index + 1 %>
+           <% END %>
+            <% row_index = row_index + 1 %>
+           <% END %>
+         </table>
+       &nbsp;&nbsp;&nbsp;&nbsp;
+       <table>
+        <tr><td>Comments</td><td>
+         <input type="text" name="comments" style="width: 400px; height: 30px">
+          <input type="hidden" name="com_gen_id" value="<% next_gene.1.0 %>">
+        </td></tr>
+       </table>
+     <p>
+       &nbsp;&nbsp;&nbsp;&nbsp;
+       <input type="submit" value="Submit" style="color:white;background-color:green">
+     <p>
+    </form>
+     <p>
+      <table>
+        <tr><td><font color='#FF0000'>Genes to do</td><td><% gene_count %></td>
+        <td><font color='#009D00'>Genes done</td><td><% done_genes %></td>
+        <td><font color='#0000FF'>Genes deleted</td><td><% del_genes %></td>
+        <td><font color='#EE00FF'>Genes added</td><td><% add_genes %></td></tr>
+        <tr><td><font color='#FF0000'>Transcripts to do</td><td><% trans_count %></td>
+        <td><font color='#009D00'>Transcripts done</td><td><% done_trans %></td>
+        <td><font color='#0000FF'>Transcripts deleted</td><td><% del_trans %></td>
+        <td><font color='#EE00FF'>Transcripts added</td><td><% add_trans %></td></tr>
+      </table>
+        </div>
+     <p>
+       &nbsp;&nbsp;&nbsp;&nbsp;
+       <button onclick="goHome()">Home</button>
+     </p>
+      </div>
+</div>
+</body>
+</html>
