@@ -34,6 +34,10 @@ th,td {
   <div id="content">
     <div id="header">
     <p><p>
+     <p>
+       &nbsp;&nbsp;&nbsp;&nbsp;
+       <button onclick="goHome()">Home</button>
+     <p><p>
     <form action="<% next_gene_url %>" method="get">
      <table>
         <% row_index = 1 %>
@@ -71,6 +75,9 @@ th,td {
                   <input type="text" name="exon_to" value="<% field %>" required>
                   <input type="hidden" name="etexon_id" value="<% rec.2 %>">
                  </td>
+                 <td>
+                  <% rec.6 %>:<% rec.7 %>-<% rec.8 %>
+                 </td>
                 <% CASE 10 %> <! -- strand -->
                  <td><% field %>
                  </td>
@@ -107,13 +114,15 @@ th,td {
                 <% CASE 7 %> <! -- seq_region -->
                  <td bgcolor='#EEB4B4'><% field %>
                  </td>
-                <% CASE 8 %> <! -- strand -->
+                <% CASE 8 %> <! -- exon_from -->
                  <td bgcolor='#EEB4B4'><% field %>
                  </td>
-                <% CASE 9 %> <! -- exon_from -->
+                <% CASE 9 %> <! -- exon_to -->
                  <td bgcolor='#EEB4B4'><% field %>
                  </td>
-                <% CASE 10 %> <! -- exon_to -->
+                 <td bgcolor='#EEB4B4'>locus
+                 </td>
+                <% CASE 10 %> <! -- strand -->
                  <td bgcolor='#EEB4B4'><% field %>
                  </td>
                 <% CASE 11 %> <! -- gene_ok -->
@@ -158,10 +167,6 @@ th,td {
         <td><font color='#EE00FF'>Transcripts added</td><td><% add_trans %></td></tr>
       </table>
         </div>
-     <p>
-       &nbsp;&nbsp;&nbsp;&nbsp;
-       <button onclick="goHome()">Home</button>
-     </p>
       </div>
 </div>
 </body>

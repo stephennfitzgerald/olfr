@@ -1,7 +1,9 @@
 package Olfr::App;
 use warnings;
 use strict;
+use Carp;
 use Dancer2;
+use String::Random qw(random_regex);
 use Data::Dumper;
 use DBI;
 
@@ -14,6 +16,46 @@ get '/' => sub {
   template 'index', {
    next_gene_url         => uri_for('/next_gene'),
    add_a_transcript_url  => uri_for('/add_a_transcript'),
+   download_gtf_url      => uri_for('/download_gtf'),
+   gtf_file              => undef,
+  };
+};
+
+
+get '/download_gtf' => sub {
+
+  my $dbh = get_schema(); 
+  my $public_dir = './public/';
+  my $gtf_file = 'download_files/olfr_models_' . random_regex('\w'x15) . '.gtf';
+  my $file_dir = $public_dir . $gtf_file;
+  my %H;
+  my $get_gtf_sth = $dbh->prepare("SELECT * FROM show_all"); 
+  $get_gtf_sth->execute;
+
+  while(my $row =$get_gtf_sth->fetchrow_arrayref) {
+   push@{ $H{ $row->[6] }{ $row->[7] }{ $row->[8] }{ $row->[9] } }, [ @{ $row }[0..5] ],   
+  }
+
+  open IN, q{>}, $file_dir or croak("can't open file $file_dir"); 
+  foreach my $chrom(sort keys %H) {
+   foreach my $start(sort {$a <=> $b} keys %{ $H{$chrom} }) {
+    foreach my $end(sort {$a <=> $b} keys %{ $H{$chrom}{$start} }) {
+     foreach my $strand( keys %{ $H{$chrom}{$start}{$end} }) {
+      foreach my $anno(@{ $H{$chrom}{$start}{$end}{$strand} }) {
+       my $nar = 'gene_id "' . $anno->[3] . '"; transcript_id "' . $anno->[4] .'"; exon_number "' . $anno->[5] . '";';
+       print IN join("\t", $chrom, 'new_model', 'exon', $start, $end, q{.}, $strand, q{.}, $nar), "\n";
+      }
+     }
+    }
+   }
+  } 
+  close(IN);
+
+  template 'index', {
+   next_gene_url         => uri_for('/next_gene'),
+   add_a_transcript_url  => uri_for('/add_a_transcript'),
+   download_gtf_url      => uri_for('/download_gtf'),
+   gtf_file              => $gtf_file, 
   };
 };
 
