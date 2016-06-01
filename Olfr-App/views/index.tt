@@ -39,6 +39,12 @@ body {
        <input type=submit value="&#8594;">
       </td></tr>
      </form>
+     <form action="<% reset_gene_url %>" method="get">
+      <tr><td>&nbsp;</td></tr>
+      <tr><td>reset&nbsp;gene&nbsp;:&nbsp;<input type="text" name="gene_name" style="height: 15px">&nbsp;&nbsp;&nbsp;&nbsp;</td><td>
+       <input type=submit value="&#8594;">
+      </td></tr>
+     </form>
      <form action="<% add_a_transcript_url %>" method="get">
       <tr><td>&nbsp;</td></tr>
       <tr><td>add&nbsp;a&nbsp;new&nbsp;transcript&nbsp;&nbsp;&nbsp;&nbsp;</td><td>

@@ -16,6 +16,28 @@ our $public_dir = './public/';
 get '/' => sub {
   template 'index', {
    next_gene_url         => uri_for('/next_gene'),
+   reset_gene_url        => uri_for('/reset_gene'),
+   add_a_transcript_url  => uri_for('/add_a_transcript'),
+   download_gtf_url      => uri_for('/download_gtf'),
+   dump_the_db_url       => uri_for('/dump_the_db'),
+   gtf_file              => undef,
+   db_dump               => undef,
+  };
+};
+
+get '/reset_gene' => sub {
+
+  my $dbh = get_schema(); 
+
+  my $gene_name = param('gene_name');
+  $gene_name =~ s/^\s+|\s+$//g;
+  if($gene_name) {
+   $dbh->do("CALL ResetGene(?)", undef, $gene_name);
+  }
+
+  template 'index', {
+   next_gene_url         => uri_for('/next_gene'),
+   reset_gene_url        => uri_for('/reset_gene'),
    add_a_transcript_url  => uri_for('/add_a_transcript'),
    download_gtf_url      => uri_for('/download_gtf'),
    dump_the_db_url       => uri_for('/dump_the_db'),
@@ -36,6 +58,7 @@ get '/dump_the_db' => sub {
  
   template 'index', {
    next_gene_url         => uri_for('/next_gene'),
+   reset_gene_url        => uri_for('/reset_gene'),
    add_a_transcript_url  => uri_for('/add_a_transcript'),
    download_gtf_url      => uri_for('/download_gtf'),
    dump_the_db_url       => uri_for('/dump_the_db'),
@@ -76,6 +99,7 @@ get '/download_gtf' => sub {
 
   template 'index', {
    next_gene_url         => uri_for('/next_gene'),
+   reset_gene_url        => uri_for('/reset_gene'),
    add_a_transcript_url  => uri_for('/add_a_transcript'),
    download_gtf_url      => uri_for('/download_gtf'),
    dump_the_db_url       => uri_for('/dump_the_db'),
@@ -186,10 +210,14 @@ get '/next_gene' => sub {
    my $ex_ids = param("efexon_id");
    if(ref($exfrom) eq "ARRAY"){
     for(my$i=0;$i<@$exfrom;$i++) {
-     $dbh->do("CALL UpdateExon(?,?,?)", undef, $exfrom->[$i], $exto->[$i], $ex_ids->[$i]);
+     my ($ex_fr) = $exfrom->[$i] =~s/\D//g;
+     my ($ex_to) = $exto->[$i] =~s/\D//g;
+     $dbh->do("CALL UpdateExon(?,?,?)", undef, $ex_fr, $ex_to, $ex_ids->[$i]);
     }
    }
    else {
+    my ($ex_fr) = $exfrom =~s/\D//g;
+    my ($ex_to) = $exto =~s/\D//g;
     $dbh->do("CALL UpdateExon(?,?,?)", undef, $exfrom, $exto, $ex_ids);
    }
   }

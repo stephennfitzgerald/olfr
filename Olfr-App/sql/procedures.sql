@@ -49,6 +49,24 @@ DELIMITER ;
 
 
 DELIMITER $$
+DROP PROCEDURE IF EXISTS ResetGene$$
+
+CREATE PROCEDURE ResetGene (
+ IN gene_name_param VARCHAR(255)
+)
+BEGIN
+ UPDATE exon ex 
+ INNER JOIN transcript tr 
+ ON ex.transcript_id = tr.id 
+ INNER JOIN gene gn 
+ ON tr.gene_id = gn.id 
+ SET ex.ok = "1", tr.ok = "1", gn.ok = "1" 
+ WHERE gn.name = gene_name_param;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
 DROP PROCEDURE IF EXISTS DeleteTrans$$
 
 CREATE PROCEDURE DeleteTrans (
