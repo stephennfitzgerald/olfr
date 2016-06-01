@@ -10,6 +10,7 @@ use DBI;
 
 our $VERSION = '0.1';
 our $db_name = 'gencode_sf5_mouse_olfr_models';
+our $public_dir = './public/';
 
 
 get '/' => sub {
@@ -17,15 +18,37 @@ get '/' => sub {
    next_gene_url         => uri_for('/next_gene'),
    add_a_transcript_url  => uri_for('/add_a_transcript'),
    download_gtf_url      => uri_for('/download_gtf'),
+   dump_the_db_url       => uri_for('/dump_the_db'),
    gtf_file              => undef,
+   db_dump               => undef,
   };
+};
+
+get '/dump_the_db' => sub {
+
+  my $dump_name = "db_dumps/$db_name" . q{_} . random_regex('\w'x15) . '.mysql';
+  my $dump_dir = $public_dir . $dump_name;
+  my $db_dump = undef;
+  system("mysqldump -u$ENV{GC_USER} -p$ENV{GC_PASS} -P$ENV{GC_PORT} -h$ENV{GC_HOST} $db_name | gzip > $dump_dir.gz");
+  if(-s "$dump_dir.gz") {
+   $db_dump = 1;   
+  }
+ 
+  template 'index', {
+   next_gene_url         => uri_for('/next_gene'),
+   add_a_transcript_url  => uri_for('/add_a_transcript'),
+   download_gtf_url      => uri_for('/download_gtf'),
+   dump_the_db_url       => uri_for('/dump_the_db'),
+   gtf_file              => undef,
+   db_dump               => $db_dump,
+  };
+
 };
 
 
 get '/download_gtf' => sub {
 
   my $dbh = get_schema(); 
-  my $public_dir = './public/';
   my $gtf_file = 'download_files/olfr_models_' . random_regex('\w'x15) . '.gtf';
   my $file_dir = $public_dir . $gtf_file;
   my %H;
@@ -55,7 +78,9 @@ get '/download_gtf' => sub {
    next_gene_url         => uri_for('/next_gene'),
    add_a_transcript_url  => uri_for('/add_a_transcript'),
    download_gtf_url      => uri_for('/download_gtf'),
+   dump_the_db_url       => uri_for('/dump_the_db'),
    gtf_file              => $gtf_file, 
+   db_dump               => undef,
   };
 };
 

@@ -12,6 +12,23 @@ function goHome()
  {
    window.location = '/';   
  }
+
+function checkVals()
+ {
+   tfr = document.getElementsByName("exon_from");
+   tto = document.getElementsByName("exon_to");
+
+   for(var x=0;x<tfr.length;x++) {
+    if( typeof tfr[x].value !== 'undefined') {
+     if( +tfr[x].value > +tto[x].value ) {
+      alert("problem: end("+tto[x].value+") < start("+tfr[x].value+")");
+      return false;
+     }
+    }
+   }
+   return true;
+ }
+
 </script>
 
 <head>
@@ -38,7 +55,7 @@ th,td {
        &nbsp;&nbsp;&nbsp;&nbsp;
        <button onclick="goHome()">Home</button>
      <p><p>
-    <form action="<% next_gene_url %>" method="get">
+    <form action="<% next_gene_url %>" method="get" onsubmit="return checkVals()">
      <table>
         <% row_index = 1 %>
          <% FOREACH rec IN next_gene %>

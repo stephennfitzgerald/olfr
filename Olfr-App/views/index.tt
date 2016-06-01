@@ -45,11 +45,21 @@ body {
        <input type=submit value="&#8594;">
       </td></tr>
      </form>
+     <form action="<% dump_the_db_url %>" method="get">
+      <tr><td>&nbsp;</td></tr>
+      <tr><td>dump&nbsp;the&nbsp;database&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>
+       <% IF db_dump %>
+        <font color = "lightgreen">Dumped</font>
+       <% ELSE %>
+       <input type=submit value="&#8594;">
+       <% END %>
+      </td></tr>
+     </form>
      <form action="<% download_gtf_url %>" method="get">
       <tr><td>&nbsp;</td></tr>
       <% IF gtf_file %>
        <tr><td>download&nbsp;a&nbsp;GTF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>
-       <a href="<% gtf_file %>" download><button type="button" style="background-color:lightgreen" onClick="location.href = document.referrer;">Download</button></a>
+       <a href="<% gtf_file %>" download><button type="button" style="background-color:lightgreen">Download</button></a>
        </td></tr>
       <% ELSE %>
       <tr><td>download&nbsp;a&nbsp;GTF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>

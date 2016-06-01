@@ -67,7 +67,7 @@ CREATE OR REPLACE VIEW show_all AS
 FROM gene gn INNER JOIN transcript tr
  ON gn.id = tr.gene_id INNER JOIN exon ex
  ON tr.id = ex.transcript_id
-WHERE ex.ok = "1" AND tr.ok = "1" AND gn.ok = "1"
+WHERE ( ex.ok != "0" AND tr.ok != "0" AND gn.ok != "0" ) 
 ORDER BY gn.id, tr.id, ex.exon_num;
 
 CREATE OR REPLACE VIEW show_todo AS
