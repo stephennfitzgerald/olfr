@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<script>
+
+function goBack() 
+ {
+   window.history.back();
+ }
+
+function goHome()
+ {
+   window.location = '/';   
+ }
+
+function checkVals()
+ {
+   tfr = document.getElementsByName("exon_from");
+   tto = document.getElementsByName("exon_to");
+
+   for(var x=0;x<tfr.length;x++) {
+    if( typeof tfr[x].value !== 'undefined') {
+     if( +tfr[x].value > +tto[x].value ) {
+      alert("problem: end("+tto[x].value+") < start("+tfr[x].value+")");
+      return false;
+     }
+    }
+   }
+   return true;
+ }
+
+</script>
+
+<head>
+<style>
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th,td {
+    padding: 15px;
+    text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+<div id="page">
+  <div id="content">
+    <div id="header">
+    <p><p>
+     <p>
+       &nbsp;&nbsp;&nbsp;&nbsp;
+       <button onclick="goHome()">Home</button>
+     <p><p>
+    <form action="<% next_gene_url %>" method="get" onsubmit="return checkVals()">
+     <table>
+        <% row_index = 1 %>
+         <% FOREACH rec IN next_gene %>
+          <% field_index = 1 %>
+             <% IF row_index % 2 %>
+              <tr bgcolor='#CEECF5'>
+             <% ELSE %>
+              <tr bgcolor='#FFFFFF'>
+             <%END %>
+             <% FOREACH field IN rec %>
+              <% IF row_index > 1 %> <!-- not the field names -->
+
+               <% SWITCH field_index %>
+                <% CASE 4 %> <! -- gene_name -->
+                 <td><% field %> 
+                 </td>
+                <% CASE 5 %> <! -- trans_name -->
+                 <td><% field %>
+                 </td>
+                <% CASE 6 %> <! -- exon_numb -->
+                 <td><% field %>
+                 </td>
+                <% CASE 7 %> <! -- seq_region -->
+                 <td>
+                  <% field %>
+                 </td>
+                <% CASE 8 %> <! -- exon_from-->
+                 <td>
+                  <input type="text" name="exon_from" value="<% field %>" required>
+                  <input type="hidden" name="efexon_id" value="<% rec.2 %>">
+                 </td>
+                <% CASE 9 %> <! -- exon_to -->
+                 <td>
+                  <input type="text" name="exon_to" value="<% field %>" required>
+                  <input type="hidden" name="etexon_id" value="<% rec.2 %>">
+                 </td>
+                 <td>
+                  <% rec.6 %>:<% rec.7 %>-<% rec.8 %>
+                 </td>
+                <% CASE 10 %> <! -- strand -->
+                 <td><% field %>
+                 </td>
+                 <td><a href="blastx/blastx.<% rec.1 %>.html"><img src="blastx/OK/blastx.<% rec.1 %>.html"></a>
+                 
+               <% END %>  
+              <% ELSE %> <!-- field headers -->
+
+               <% SWITCH field_index %>
+                <% CASE 4 %> <! -- gene_name -->
+                 <td bgcolor='#EEB4B4'><% field %> 
+                 </td>
+                <% CASE 5 %> <! -- trans_name -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                <% CASE 6 %> <! -- exon_numb -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                <% CASE 7 %> <! -- seq_region -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                <% CASE 8 %> <! -- exon_from -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                <% CASE 9 %> <! -- exon_to -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                 <td bgcolor='#EEB4B4'>locus
+                 </td>
+                <% CASE 10 %> <! -- strand -->
+                 <td bgcolor='#EEB4B4'><% field %>
+                 </td>
+                 <td bgcolor='#EEB4B4'>blastx
+                 </td>
+               <% END %> 
+              <% END %>
+              <% field_index = field_index + 1 %>
+           <% END %>
+            <% row_index = row_index + 1 %>
+           <% END %>
+         </table>
+    </form>
+</div>
+</body>
+</html>
