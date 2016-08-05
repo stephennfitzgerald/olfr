@@ -9,16 +9,16 @@
 <style  type="text/css">
 
 body {
-    background-image: url("images/mouse_nose.jpg");
+    background-image: url("images/human_nose.jpg");
     background-repeat: no-repeat;
     background-size: cover;
-    background-size:150%;
+    background-size:100%;
     background-position: center;
 }
 
 #box {
-    margin-left:150px;
-    margin-top:160px;
+    margin-left:100px;
+    margin-top:100px;
     font-family:sans-serif;
     font-size:20pt;
     color:white;
@@ -73,5 +73,17 @@ body {
       </td></tr>
       <% END %>
       </form>
+     <form action="<% find_all_genes_url %>" method="get">
+      <tr><td>&nbsp;</td></tr>
+      <tr><td>find&nbsp;gene(s)&nbsp;:&nbsp;<input type="text" name="find_gene_name" style="height: 15px">&nbsp;&nbsp;&nbsp;&nbsp;</td><td>
+       <input type=submit value="&#8594;">
+      </td></tr>
+     </form>
+     <form action="<% find_all_trans_url %>" method="get">
+      <tr><td>&nbsp;</td></tr>
+      <tr><td>find&nbsp;transcripts&nbsp;:&nbsp;<input type="text" name="find_trans_name" style="height: 15px">&nbsp;&nbsp;&nbsp;&nbsp;</td><td>
+       <input type=submit value="&#8594;">
+      </td></tr>
+     </form>
     </table>
 </body>
