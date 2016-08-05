@@ -1,3 +1,58 @@
+DELIMITER $$
+DROP PROCEDURE IF EXISTS GetALLRec$$
+
+CREATE PROCEDURE GetALLRec (
+ IN gene_name_param VARCHAR(255)
+)
+BEGIN
+ SELECT gn.id gene_id,
+        tr.id trans_id,
+        ex.id exon_id,
+        gn.name gene_name,
+        tr.name trans_name,
+        ex.exon_num exon_num,
+        gn.seq_region,
+        ex.pos_from exon_from,
+        ex.pos_to exon_to,
+        gn.strand,
+        gn.ok gene_ok,
+        tr.ok trans_ok,
+        ex.ok exon_ok
+ FROM gene gn INNER JOIN transcript tr
+  ON gn.id = tr.gene_id INNER JOIN exon ex
+  ON tr.id = ex.transcript_id
+ WHERE gn.name LIKE CONCAT('%', gene_name_param , '%');
+END$$
+DELIMITER ;
+            
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS GetALLTrans$$
+
+CREATE PROCEDURE GetALLTrans (
+ IN gene_name_param VARCHAR(255)
+)
+BEGIN
+ SELECT gn.id gene_id,
+        tr.id trans_id,
+        ex.id exon_id,
+        gn.name gene_name,
+        tr.name trans_name,
+        ex.exon_num exon_num,
+        gn.seq_region,
+        ex.pos_from exon_from,
+        ex.pos_to exon_to,
+        gn.strand,
+        gn.ok gene_ok,
+        tr.ok trans_ok,
+        ex.ok exon_ok
+ FROM gene gn INNER JOIN transcript tr
+  ON gn.id = tr.gene_id INNER JOIN exon ex
+  ON tr.id = ex.transcript_id
+ WHERE tr.name LIKE CONCAT('%', gene_name_param , '%');
+END$$
+DELIMITER ;
+
 
 DELIMITER $$
 DROP PROCEDURE IF EXISTS GetNextRec$$
