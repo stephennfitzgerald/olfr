@@ -9,7 +9,10 @@ use DBI;
 
 
 our $VERSION = '0.1';
-our $db_name = 'gencode_sf5_mouse_olfr_models';
+our $db_name = 'gencode_sf5_human_OLFRs1';
+#our $db_name = 'gencode_sf5_mouse_olfr_splice2_models';
+#our $db_name = 'gencode_sf5_mouse_olfr_splice_models';
+#our $db_name = 'gencode_sf5_mouse_olfr_models';
 our $public_dir = './public/';
 
 
@@ -20,6 +23,8 @@ get '/' => sub {
    add_a_transcript_url  => uri_for('/add_a_transcript'),
    download_gtf_url      => uri_for('/download_gtf'),
    dump_the_db_url       => uri_for('/dump_the_db'),
+   find_all_genes_url    => uri_for('/find_all_genes'),
+   find_all_trans_url    => uri_for('/find_all_trans'),
    gtf_file              => undef,
    db_dump               => undef,
   };
@@ -41,6 +46,8 @@ get '/reset_gene' => sub {
    add_a_transcript_url  => uri_for('/add_a_transcript'),
    download_gtf_url      => uri_for('/download_gtf'),
    dump_the_db_url       => uri_for('/dump_the_db'),
+   find_all_genes_url    => uri_for('/find_all_genes'),
+   find_all_trans_url    => uri_for('/find_all_trans'),
    gtf_file              => undef,
    db_dump               => undef,
   };
@@ -62,6 +69,8 @@ get '/dump_the_db' => sub {
    add_a_transcript_url  => uri_for('/add_a_transcript'),
    download_gtf_url      => uri_for('/download_gtf'),
    dump_the_db_url       => uri_for('/dump_the_db'),
+   find_all_genes_url => uri_for('/find_all_genes'),
+   find_all_trans_url    => uri_for('/find_all_trans'),
    gtf_file              => undef,
    db_dump               => $db_dump,
   };
@@ -103,6 +112,8 @@ get '/download_gtf' => sub {
    add_a_transcript_url  => uri_for('/add_a_transcript'),
    download_gtf_url      => uri_for('/download_gtf'),
    dump_the_db_url       => uri_for('/dump_the_db'),
+   find_all_genes_url => uri_for('/find_all_genes'),
+   find_all_trans_url    => uri_for('/find_all_trans'),
    gtf_file              => $gtf_file, 
    db_dump               => undef,
   };
@@ -210,14 +221,14 @@ get '/next_gene' => sub {
    my $ex_ids = param("efexon_id");
    if(ref($exfrom) eq "ARRAY"){
     for(my$i=0;$i<@$exfrom;$i++) {
-     my ($ex_fr) = $exfrom->[$i] =~s/\D//g;
-     my ($ex_to) = $exto->[$i] =~s/\D//g;
-     $dbh->do("CALL UpdateExon(?,?,?)", undef, $ex_fr, $ex_to, $ex_ids->[$i]);
+     $exfrom->[$i] =~s/\D*//g;
+     $exto->[$i] =~s/\D*//g;
+     $dbh->do("CALL UpdateExon(?,?,?)", undef, $exfrom->[$i], $exto->[$i], $ex_ids->[$i]);
     }
    }
-   else {
-    my ($ex_fr) = $exfrom =~s/\D//g;
-    my ($ex_to) = $exto =~s/\D//g;
+   elsif($exfrom && $exto) {
+    $exfrom =~s/\D*//g;
+    $exto =~s/\D*//g;
     $dbh->do("CALL UpdateExon(?,?,?)", undef, $exfrom, $exto, $ex_ids);
    }
   }
@@ -230,6 +241,12 @@ get '/next_gene' => sub {
 
 
   my $ng_sth = $dbh->prepare("SELECT * FROM next_gene");
+#  my $ng_sth = $dbh->prepare("SELECT * FROM next_gene_1");
+#  my $ng_sth = $dbh->prepare("SELECT * FROM next_gene_2");
+#  my $ng_sth = $dbh->prepare("SELECT * FROM next_gene_3");
+#  my $ng_sth = $dbh->prepare("SELECT * FROM next_gene_4");
+#  my $ng_sth = $dbh->prepare("SELECT * FROM next_gene_5");
+#  my $ng_sth = $dbh->prepare("SELECT * FROM next_gene_6"); 
   $ng_sth->execute;
   my $ng = $ng_sth->fetchall_arrayref;
   my $n_row_sth = $dbh->prepare("CALL GetNextRec(?)");
@@ -272,25 +289,144 @@ get '/next_gene' => sub {
   
   
   template 'next_gene', {
-   next_gene     => $next_gene, 
-   gene_count    => $cgn->[0]->[0],
-   trans_count   => $cts->[0]->[0],
-   done_genes    => $dgn->[0]->[0], 
-   done_trans    => $dts->[0]->[0],
-   del_genes     => $del_gn->[0]->[0],
-   del_trans     => $del_ts->[0]->[0],
-   add_genes     => $add_gn->[0]->[0],
-   add_trans    => $add_ts->[0]->[0],
-   next_gene_url => uri_for('/next_gene'),
+   next_gene             => $next_gene, 
+   gene_count            => $cgn->[0]->[0],
+   trans_count           => $cts->[0]->[0],
+   done_genes            => $dgn->[0]->[0], 
+   done_trans            => $dts->[0]->[0],
+   del_genes             => $del_gn->[0]->[0],
+   del_trans             => $del_ts->[0]->[0],
+   add_genes             => $add_gn->[0]->[0],
+   add_trans             => $add_ts->[0]->[0],
+   next_gene_url         => uri_for('/next_gene'),
+   find_all_genes_url    => uri_for('/find_all_genes'),
+   find_all_trans_url    => uri_for('/find_all_trans'),
   };
 
+};
+
+
+get '/find_all_genes' => sub {
+  
+  my $dbh = get_schema();
+
+  my $n_row_sth = $dbh->prepare("CALL GetALLRec(?)");
+  my $gene_name = param('find_gene_name');
+  $n_row_sth->execute("$gene_name");
+  my $col_names = $n_row_sth->{'NAME'};
+  my $all_genes = $n_row_sth->fetchall_arrayref;
+  unshift@{ $all_genes }, $col_names;
+
+  my $ct_gn_sth = $dbh->prepare("SELECT * FROM count_genes");
+  $ct_gn_sth->execute;
+  my $cgn = $ct_gn_sth->fetchall_arrayref;
+  
+  my $ct_ts_sth = $dbh->prepare("SELECT * FROM count_trans");
+  $ct_ts_sth->execute;
+  my $cts = $ct_ts_sth->fetchall_arrayref;
+ 
+  my $dt_gn_sth = $dbh->prepare("SELECT * FROM done_genes");
+  $dt_gn_sth->execute;
+  my $dgn = $dt_gn_sth->fetchall_arrayref;
+  
+  my $dt_ts_sth = $dbh->prepare("SELECT * FROM done_trans");
+  $dt_ts_sth->execute;
+  my $dts = $dt_ts_sth->fetchall_arrayref;
+  
+  my $del_gn_sth = $dbh->prepare("SELECT * FROM del_genes");
+  $del_gn_sth->execute;
+  my $del_gn = $del_gn_sth->fetchall_arrayref;
+  
+  my $del_ts_sth = $dbh->prepare("SELECT * FROM del_trans");
+  $del_ts_sth->execute;
+  my $del_ts = $del_ts_sth->fetchall_arrayref;
+  
+  my $add_gn_sth = $dbh->prepare("SELECT * FROM add_genes");
+  $add_gn_sth->execute;
+  my $add_gn = $add_gn_sth->fetchall_arrayref;
+  
+  my $add_ts_sth = $dbh->prepare("SELECT * FROM add_trans");
+  $add_ts_sth->execute;
+  my $add_ts = $add_ts_sth->fetchall_arrayref;
+
+  template 'find_gene', {
+   next_gene             => $all_genes, 
+   gene_count            => $cgn->[0]->[0],
+   trans_count           => $cts->[0]->[0],
+   done_genes            => $dgn->[0]->[0], 
+   done_trans            => $dts->[0]->[0],
+   del_genes             => $del_gn->[0]->[0],
+   del_trans             => $del_ts->[0]->[0],
+   add_genes             => $add_gn->[0]->[0],
+   add_trans             => $add_ts->[0]->[0],
+   find_all_genes_url    => uri_for('/find_all_genes'),
+   find_all_trans_url    => uri_for('/find_all_trans'),
+  };
+};
+
+
+get '/find_all_trans' => sub {
+  
+  my $dbh = get_schema();
+
+  my $n_row_sth = $dbh->prepare("CALL GetALLTrans(?)");
+  my $trans_name = param('find_trans_name');
+  $n_row_sth->execute("$trans_name");
+  my $col_names = $n_row_sth->{'NAME'};
+  my $all_trans = $n_row_sth->fetchall_arrayref;
+  unshift@{ $all_trans }, $col_names;
+
+  my $ct_gn_sth = $dbh->prepare("SELECT * FROM count_genes");
+  $ct_gn_sth->execute;
+  my $cgn = $ct_gn_sth->fetchall_arrayref;
+  
+  my $ct_ts_sth = $dbh->prepare("SELECT * FROM count_trans");
+  $ct_ts_sth->execute;
+  my $cts = $ct_ts_sth->fetchall_arrayref;
+ 
+  my $dt_gn_sth = $dbh->prepare("SELECT * FROM done_genes");
+  $dt_gn_sth->execute;
+  my $dgn = $dt_gn_sth->fetchall_arrayref;
+  
+  my $dt_ts_sth = $dbh->prepare("SELECT * FROM done_trans");
+  $dt_ts_sth->execute;
+  my $dts = $dt_ts_sth->fetchall_arrayref;
+  
+  my $del_gn_sth = $dbh->prepare("SELECT * FROM del_genes");
+  $del_gn_sth->execute;
+  my $del_gn = $del_gn_sth->fetchall_arrayref;
+  
+  my $del_ts_sth = $dbh->prepare("SELECT * FROM del_trans");
+  $del_ts_sth->execute;
+  my $del_ts = $del_ts_sth->fetchall_arrayref;
+  
+  my $add_gn_sth = $dbh->prepare("SELECT * FROM add_genes");
+  $add_gn_sth->execute;
+  my $add_gn = $add_gn_sth->fetchall_arrayref;
+  
+  my $add_ts_sth = $dbh->prepare("SELECT * FROM add_trans");
+  $add_ts_sth->execute;
+  my $add_ts = $add_ts_sth->fetchall_arrayref;
+
+  template 'find_gene', {
+   next_gene             => $all_trans, 
+   gene_count            => $cgn->[0]->[0],
+   trans_count           => $cts->[0]->[0],
+   done_genes            => $dgn->[0]->[0], 
+   done_trans            => $dts->[0]->[0],
+   del_genes             => $del_gn->[0]->[0],
+   del_trans             => $del_ts->[0]->[0],
+   add_genes             => $add_gn->[0]->[0],
+   add_trans             => $add_ts->[0]->[0],
+   find_all_genes_url    => uri_for('/find_all_genes'),
+   find_all_trans_url    => uri_for('/find_all_trans'),
+  };
 };
 
 
 get '/add_a_transcript' => sub {
  
  my $dbh = get_schema();
-
 
  my($gene_name, $trans_name, $chromosome, $sel_strand) = 
  (param('gene_name'), param('trans_name'), param('chromosome'), param('strand'));
